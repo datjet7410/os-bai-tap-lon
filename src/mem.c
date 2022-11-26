@@ -213,15 +213,15 @@ int free_mem(addr_t address, struct pcb_t * proc) {
     // clear virtual page stored in process
 	for(int i=0;i<num_free_pages;i++){
 		addr_t curr_v_address = address + PAGE_SIZE * i;
-		int seg_index = get_first_lv(curr_v_address);
-		int page_index = get_second_lv(curr_v_address);
-		struct trans_table_t  *trans_table = get_trans_table(seg_index,proc->seg_table);
+		int page_index = get_first_lv(curr_v_address);
+		int trans_index = get_second_lv(curr_v_address);
+		struct trans_table_t  *trans_table = get_trans_table(page_index,proc->seg_table);
 		if(!trans_table) {
 			puts("-----------ERROR DEALLOCATION-----------\n");
 			continue;
 		}
 		for(int j=0;j<trans_table->size;j++){
-			if(trans_table->table[j].v_index == page_index){
+			if(trans_table->table[j].v_index == trans_index){
 				trans_table->size--;
 				for(int k = j; k<trans_table->size;k++){
 					trans_table->table[k] = trans_table->table[k+1]; // shift the page to 
@@ -233,7 +233,7 @@ int free_mem(addr_t address, struct pcb_t * proc) {
 			free(trans_table);      // remove the whole page table 
 			int m;                 // and also remove the segment row that points to it
 			for(m = 0;m<proc->seg_table->size;m++){
-				if(seg_index == proc->seg_table->table[m].v_index) break;
+				if(page_index == proc->seg_table->table[m].v_index) break;
 			}
 			int n;
 			for(n = m; n<proc->seg_table->size-1; n++){
