@@ -95,7 +95,9 @@ static int translate(addr_t virtual_addr,   // Given virtual address
 }
 
 addr_t alloc_mem(uint32_t size, struct pcb_t *proc) {
+	#ifndef NO_SYNC
     pthread_mutex_lock(&mem_lock);
+	#endif
     addr_t ret_mem = 0;
     /* TODO: Allocate [size] byte in the memory for the
      * process [proc] and save the address of the first
@@ -193,11 +195,13 @@ addr_t alloc_mem(uint32_t size, struct pcb_t *proc) {
         }
     }
 
+	#ifndef NO_SYNC
     pthread_mutex_unlock(&mem_lock);
+	#endif
 
-    // printf("Allocation\n");
-    // dump();
-    // printf("-----\n");
+    printf("Allocation\n");
+    dump();
+    printf("-----\n");
 
     return ret_mem;
 }
@@ -211,7 +215,9 @@ int free_mem(addr_t address, struct pcb_t *proc) {
      * 	  the process [proc].
      * 	- Remember to use lock to protect the memory from other
      * 	  processes.  */
+    #ifndef NO_SYNC
     pthread_mutex_lock(&mem_lock);
+	#endif
     /* - First, we find physical page in memory
      * using translation function to map
      * - if successful, we begin to traverse in mem list */
@@ -292,11 +298,13 @@ int free_mem(addr_t address, struct pcb_t *proc) {
         }
     }
 
+	#ifndef NO_SYNC
     pthread_mutex_unlock(&mem_lock);
+	#endif
 
-    // printf("Deallocation\n");
-    // dump();
-    // printf("-----\n");
+    printf("Deallocation\n");
+    dump();
+    printf("-----\n");
     return 0;
 }
 

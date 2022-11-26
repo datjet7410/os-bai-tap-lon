@@ -49,7 +49,9 @@ struct pcb_t * get_mlq_proc(void) {
 	/*TODO: get a process from PRIORITY [ready_queue].
 	 * Remember to use lock to protect the queue.
 	 * */
-	pthread_mutex_lock(&queue_lock);
+	#ifndef NO_SYNC
+    pthread_mutex_lock(&queue_lock);
+	#endif
 
 	for(int i = 0; i < MAX_PRIO; i++){
 		if(!empty(&mlq_ready_queue[i])){
@@ -57,21 +59,31 @@ struct pcb_t * get_mlq_proc(void) {
 			break;
 		}
 	}
-	pthread_mutex_unlock(&queue_lock);
+	#ifndef NO_SYNC
+    pthread_mutex_unlock(&queue_lock);
+	#endif
 	
 	return proc;	
 }
 
 void put_mlq_proc(struct pcb_t * proc) {
-	pthread_mutex_lock(&queue_lock);
+	#ifndef NO_SYNC
+    pthread_mutex_lock(&queue_lock);
+	#endif
 	enqueue(&mlq_ready_queue[proc->prio], proc);
-	pthread_mutex_unlock(&queue_lock);
+	#ifndef NO_SYNC
+    pthread_mutex_unlock(&queue_lock);
+	#endif
 }
 
 void add_mlq_proc(struct pcb_t * proc) {
-	pthread_mutex_lock(&queue_lock);
+	#ifndef NO_SYNC
+    pthread_mutex_lock(&queue_lock);
+	#endif
 	enqueue(&mlq_ready_queue[proc->prio], proc);
-	pthread_mutex_unlock(&queue_lock);	
+	#ifndef NO_SYNC
+    pthread_mutex_unlock(&queue_lock);
+	#endif	
 }
 
 struct pcb_t * get_proc(void) {
@@ -95,15 +107,23 @@ struct pcb_t * get_proc(void) {
 }
 
 void put_proc(struct pcb_t * proc) {
-	pthread_mutex_lock(&queue_lock);
+	#ifndef NO_SYNC
+    pthread_mutex_lock(&queue_lock);
+	#endif
 	enqueue(&run_queue, proc);
-	pthread_mutex_unlock(&queue_lock);
+	#ifndef NO_SYNC
+    pthread_mutex_unlock(&queue_lock);
+	#endif
 }
 
 void add_proc(struct pcb_t * proc) {
-	pthread_mutex_lock(&queue_lock);
+	#ifndef NO_SYNC
+    pthread_mutex_lock(&queue_lock);
+	#endif
 	enqueue(&ready_queue, proc);
-	pthread_mutex_unlock(&queue_lock);	
+	#ifndef NO_SYNC
+    pthread_mutex_unlock(&queue_lock);
+	#endif	
 }
 #endif
 
