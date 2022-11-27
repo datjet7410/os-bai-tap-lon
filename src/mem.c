@@ -195,13 +195,15 @@ addr_t alloc_mem(uint32_t size, struct pcb_t *proc) {
         }
     }
 
-	#ifndef NO_SYNC
-    pthread_mutex_unlock(&mem_lock);
-	#endif
-
+    #ifndef NO_SHOW_ALLOC
     printf("Allocation\n");
     dump();
     printf("-----\n");
+    #endif
+
+    #ifndef NO_SYNC
+    pthread_mutex_unlock(&mem_lock);
+	#endif
 
     return ret_mem;
 }
@@ -298,13 +300,16 @@ int free_mem(addr_t address, struct pcb_t *proc) {
         }
     }
 
-	#ifndef NO_SYNC
-    pthread_mutex_unlock(&mem_lock);
-	#endif
-
+    #ifndef NO_SHOW_ALLOC
     printf("Deallocation\n");
     dump();
     printf("-----\n");
+    #endif
+
+    #ifndef NO_SYNC
+    pthread_mutex_unlock(&mem_lock);
+	#endif
+
     return 0;
 }
 

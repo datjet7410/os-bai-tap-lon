@@ -5,6 +5,9 @@
 
 #include <stdint.h>
 
+// #define NO_SYNC
+// #define NO_SHOW_ALLOC
+
 #define ADDRESS_SIZE	20
 #define OFFSET_LEN	10
 #define FIRST_LV_LEN	5
